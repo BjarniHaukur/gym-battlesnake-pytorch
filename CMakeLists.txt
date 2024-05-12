@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
-project(gymbattlesnake)
+project(gymbattlesnakepytorch)
 
 set(CMAKE_CXX_STANDARD 11)
-set(PROJECT_DIR "${CMAKE_SOURCE_DIR}/gym_battlesnake")
+set(PROJECT_DIR "${CMAKE_SOURCE_DIR}/gym_battlesnake_pytorch")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_DIR}/cmake/Modules")
 
 find_package(SFML 2 COMPONENTS graphics window system REQUIRED)

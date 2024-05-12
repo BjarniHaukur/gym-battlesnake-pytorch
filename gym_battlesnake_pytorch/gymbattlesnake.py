@@ -2,8 +2,8 @@ import numpy as np
 import ctypes
 import pathlib
 from time import sleep
-from gym import spaces
-from stable_baselines.common.vec_env import VecEnv
+from gymnasium import spaces
+from stable_baselines3.common.vec_env import VecEnv
 
 def wrap_function(lib, funcname, restype, argtypes):
     """Simplify wrapping ctypes functions"""
@@ -43,6 +43,9 @@ class BattlesnakeEnv(VecEnv):
         self.n_threads = n_threads
         self.n_envs = n_envs
         self.ptr = env_new(self.n_threads, self.n_envs, self.n_opponents+1)
+
+        self.render_mode = ["rgb_array" for _ in range(n_envs)]
+
         super(BattlesnakeEnv, self).__init__(self.n_envs, self.observation_space, self.action_space)
         self.reset()
 
@@ -63,7 +66,7 @@ class BattlesnakeEnv(VecEnv):
     def step_wait(self):
 
         info = [{} for _ in range(self.n_envs)]
-        dones = np.asarray([ False for _ in range(self.n_envs) ])
+        dones = np.asarray([False for _ in range(self.n_envs)])
         rews = np.zeros((self.n_envs))
 
         infoptr = env_infoptr(self.ptr)
@@ -98,3 +101,87 @@ class BattlesnakeEnv(VecEnv):
     def getact(self, agent_i):
         actptr = env_actptr(self.ptr, agent_i)
         return np.ctypeslib.as_array(actptr, shape=(self.n_envs,))
+    
+    def env_is_wrapped(self, wrapper_class, indices=None):
+        if indices is None:
+            indices = range(self.n_envs)
+        elif isinstance(indices, int):
+            indices = [indices]
+        
+        result = []
+        for idx in indices:
+            # Assuming each env can be accessed directly or through some manager,
+            # which would store wrapper info; adjust according to actual implementation.
+            env = self.get_env(idx)
+            result.append(isinstance(env, wrapper_class))
+        return result
+    
+    def env_method(self, method_name, *method_args, indices=None, **method_kwargs):
+        if indices is None:
+            indices = range(self.n_envs)
+        elif isinstance(indices, int):
+            indices = [indices]
+
+        results = []
+        for idx in indices:
+            env = self.get_env(idx)
+            method = getattr(env, method_name)
+            result = method(*method_args, **method_kwargs)
+            results.append(result)
+        return results
+
+    def get_attr(self, attr_name, indices=None):
+        infoptr = env_infoptr(self.ptr)  # this returns a ctypes pointer to the info array
+
+        # If indices are not specified, get attribute for all environments
+        if indices is None:
+            indices = range(self.n_envs)
+        elif isinstance(indices, int):
+            indices = [indices]  # Convert single index to list
+
+        # Retrieve the attribute values from the info struct array
+        results = []
+        for idx in indices:
+            if attr_name == "health":
+                value = infoptr[idx].health_
+            elif attr_name == "length":
+                value = infoptr[idx].length_
+            elif attr_name == "turn":
+                value = infoptr[idx].turn_
+            elif attr_name == "alive":
+                value = infoptr[idx].alive_
+            elif attr_name == "ate":
+                value = infoptr[idx].ate_
+            elif attr_name == "over":
+                value = infoptr[idx].over_
+            else:
+                value = "human"
+
+            results.append(value)
+
+        return results
+
+    def set_attr(self, attr_name, value, indices=None):
+        infoptr = env_infoptr(self.ptr)
+
+        if indices is None:
+            indices = range(self.n_envs)
+        elif isinstance(indices, int):
+            indices = [indices]  # Convert single index to list
+
+      
+        for idx in indices:
+            if hasattr(infoptr[idx], attr_name):
+                # Hypothetical setter usage if setters were available
+                # setattr(infoptr[idx], attr_name, value)
+                # Since we typically can't do the above safely, you'd need a specific C function to call.
+                pass
+            else:
+                # Handling other types of attributes that might be set in Python part of the environment
+                if attr_name == "render_mode":
+                    # Assuming we store render_mode in Python side of the BattlesnakeEnv
+                    self.render_mode[idx] = value
+                else:
+                    raise ValueError("Attribute name not recognized or cannot be set directly")
+
+

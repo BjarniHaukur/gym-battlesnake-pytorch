@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Name: gym_battlesnake_pytorch
+Version: 0.0.1
+Home-page: https://github.com/BjarniHaukur/gym-battlesnake-pytorch
+Author: Bjarni Haukur
+Author-email: bjarnihaukur11@gmail.com
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: gym
+Requires-Dist: numpy
+Requires-Dist: stable-baselines3

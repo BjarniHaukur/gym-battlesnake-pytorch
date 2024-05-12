@@ -1,5 +1,5 @@
-from gym_battlesnake.gymbattlesnake import BattlesnakeEnv
-from gym_battlesnake.custompolicy import CustomPolicy
+from gym_battlesnake_pytorch.gymbattlesnake import BattlesnakeEnv
+from gym_battlesnake_pytorch.custompolicy import CustomPolicy
 from stable_baselines import PPO2
 
 num_agents = 4

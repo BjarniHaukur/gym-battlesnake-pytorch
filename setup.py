@@ -34,26 +34,24 @@ class CMakeBuild(build_ext):
             self.distribution.get_version())
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
-        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args,
-                              cwd=self.build_temp, env=env)
-        subprocess.check_call(['cmake', '--build', '.'] + build_args,
-                              cwd=self.build_temp)
+        subprocess.check_call(['cmake', '--build', '.', '--config', 'Release', '--', '-j2', 'VERBOSE=1'])
+
         print()  # Add an empty line for cleaner output
 
 setup(
-    name="gym_battlesnake",
+    name="gym_battlesnake_pytorch",
     version="0.0.1",
-    author="Arthur Firmino",
-    author_email="arthur.p.v.firmino@gmail.com",
+    author="Bjarni Haukur",
+    author_email="bjarnihaukur11@gmail.com",
     description="",
     long_description="",
     long_description_content_type="text/markdown",
-    url="https://github.com/ArthurFirmino/gym-battlesnake",
-    packages=["gym_battlesnake"],
+    url="https://github.com/BjarniHaukur/gym-battlesnake-pytorch",
+    packages=["gym_battlesnake_pytorch"],
     install_requires=[
         'gym',
         'numpy',
-        'stable-baselines==2.5.0',
+        'stable-baselines3',
     ],
     ext_modules=[CMakeExtension('gym_battlesnake/gym_battlesnake')],
     cmdclass=dict(build_ext=CMakeBuild),

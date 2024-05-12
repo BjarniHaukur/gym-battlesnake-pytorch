@@ -1,0 +1,6 @@
+numpy
+gym
+stable-baselines3 # version 3 is implemented in pytorch
+
+# for examples
+torch
