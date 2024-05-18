@@ -27,8 +27,8 @@ env_actptr = wrap_function(gamelib, 'env_getactpointer', ctypes.POINTER(ctypes.c
 env_infoptr = wrap_function(gamelib, 'env_getinfopointer', ctypes.POINTER(info), [ctypes.c_void_p])
 
 NUM_LAYERS = 6
-LAYER_WIDTH = 39
-LAYER_HEIGHT = 39
+LAYER_WIDTH = 11
+LAYER_HEIGHT = 11
 
 class BattlesnakeEnv(VecEnv):
     """Multi-Threaded Multi-Agent Snake Environment"""
@@ -70,15 +70,17 @@ class BattlesnakeEnv(VecEnv):
         rews = np.zeros((self.n_envs))
 
         infoptr = env_infoptr(self.ptr)
+
+        print(infoptr[0].turn)
         for i in range(self.n_envs):
             if infoptr[i].ate:
-                rews[i] += 0.1
+                rews[i] += 10#0.1
             if infoptr[i].over:
                 dones[i] = True
                 info[i]['episode'] = {}
                 if infoptr[i].alive:
-                    rews[i] += 1.0 if infoptr[i].turn > 100 else 0.0
-                    info[i]['episode']['r'] = 1.0 if infoptr[i].turn > 100 else 0.0
+                    rews[i] += 1.0# if infoptr[i].turn > 3 else 0.0 # 100
+                    info[i]['episode']['r'] = 1.0 if infoptr[i].turn > 10 else 0.0
                 else:
                     rews[i] -= 1.0
                     info[i]['episode']['r'] = -1.0
@@ -103,6 +105,7 @@ class BattlesnakeEnv(VecEnv):
         return np.ctypeslib.as_array(actptr, shape=(self.n_envs,))
     
     def env_is_wrapped(self, wrapper_class, indices=None):
+        print(f"env_is_wrapped: {wrapper_class=}, {indices=}")
         if indices is None:
             indices = range(self.n_envs)
         elif isinstance(indices, int):
@@ -117,6 +120,8 @@ class BattlesnakeEnv(VecEnv):
         return result
     
     def env_method(self, method_name, *method_args, indices=None, **method_kwargs):
+        print(f"env_method: {method_name=} {method_args=} {method_kwargs} {indices=}")
+        print( method_name, method_args, indices, method_kwargs)
         if indices is None:
             indices = range(self.n_envs)
         elif isinstance(indices, int):
@@ -131,6 +136,7 @@ class BattlesnakeEnv(VecEnv):
         return results
 
     def get_attr(self, attr_name, indices=None):
+        print(f"get_attr: {attr_name=} {indices=}")
         infoptr = env_infoptr(self.ptr)  # this returns a ctypes pointer to the info array
 
         # If indices are not specified, get attribute for all environments
@@ -162,6 +168,7 @@ class BattlesnakeEnv(VecEnv):
         return results
 
     def set_attr(self, attr_name, value, indices=None):
+        print(f"set_attr {attr_name} {value} {indices}")
         infoptr = env_infoptr(self.ptr)
 
         if indices is None:
@@ -172,9 +179,6 @@ class BattlesnakeEnv(VecEnv):
       
         for idx in indices:
             if hasattr(infoptr[idx], attr_name):
-                # Hypothetical setter usage if setters were available
-                # setattr(infoptr[idx], attr_name, value)
-                # Since we typically can't do the above safely, you'd need a specific C function to call.
                 pass
             else:
                 # Handling other types of attributes that might be set in Python part of the environment

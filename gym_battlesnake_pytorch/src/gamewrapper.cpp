@@ -12,8 +12,8 @@
 #include "gamerenderer.h"
 
 #define NUM_LAYERS 6
-#define LAYER_WIDTH 39
-#define LAYER_HEIGHT 39
+#define LAYER_WIDTH 11
+#define LAYER_HEIGHT 11
 #define OBS_SIZE NUM_LAYERS * LAYER_WIDTH * LAYER_HEIGHT
 
 struct info {
@@ -118,10 +118,8 @@ public:
                 auto& gi = envs_[ii];
                 gi.reset();
                 // Create new game instance
-                unsigned bwidth = (std::rand() % (1+19-7)) + 7;
-                unsigned bheight = (std::rand() % (1+19-7)) + 7;
                 unsigned nfood = (std::rand() % 8) + 1;
-                gi = std::make_shared<GameInstance>(bwidth, bheight, n_models_, nfood);
+                gi = std::make_shared<GameInstance>(LAYER_WIDTH, LAYER_HEIGHT, n_models_, nfood);
                 // Write states into observation arrays
                 auto ids = gi->getplayerids();
                 auto state = gi->getstate();

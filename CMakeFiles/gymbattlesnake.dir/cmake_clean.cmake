@@ -5,8 +5,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/gymbattlesnake.dir/gym_battlesnake_pytorch/src/gamewrapper.cpp.o.d"
   "CMakeFiles/gymbattlesnake.dir/gym_battlesnake_pytorch/src/threadpool.cpp.o"
   "CMakeFiles/gymbattlesnake.dir/gym_battlesnake_pytorch/src/threadpool.cpp.o.d"
-  "gym_battlesnake/libgymbattlesnake.pdb"
-  "gym_battlesnake/libgymbattlesnake.so"
+  "gym_battlesnake_pytorch/libgymbattlesnake.pdb"
+  "gym_battlesnake_pytorch/libgymbattlesnake.so"
 )
 
 # Per-language clean rules from dependency scanning.

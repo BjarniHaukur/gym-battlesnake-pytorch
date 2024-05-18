@@ -104,7 +104,7 @@ CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=
 CMAKE_INSTALL_PREFIX:PATH=/usr/local
 
 //No help, variable specified on the command line.
-CMAKE_LIBRARY_OUTPUT_DIRECTORY:UNINITIALIZED=/home/bobbi/proj/gym-battlesnake-pytorch/gym_battlesnake
+CMAKE_LIBRARY_OUTPUT_DIRECTORY:UNINITIALIZED=/home/bobbi/proj/gym-battlesnake-pytorch/gym_battlesnake_pytorch
 
 //Path to a program.
 CMAKE_LINKER:FILEPATH=/usr/bin/ld
